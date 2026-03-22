@@ -1,0 +1,14 @@
+# Render Deployment Configuration
+
+services:
+  - type: web
+    name: whatsapp-bot
+    env: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    
