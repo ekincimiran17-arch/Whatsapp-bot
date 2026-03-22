@@ -1,27 +1,27 @@
-const { default: makeWASocket, useMultiFileAuthState } = require('@whiskeysockets/baileys');
+// Bot code goes here
+
+const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const express = require('express');
 
-async function start() {
-    const { state, saveCreds } = await useMultiFileAuthState('auth');
+const app = express();
+const client = new Client();
 
-    const sock = makeWASocket({ auth: state });
+client.on('qr', (qr) => {
+    // Generate and show qr code for authentication
+    qrcode.generate(qr, {small: true});
+});
 
-    sock.ev.on('creds.update', saveCreds);
+client.on('ready', () => {
+    console.log('Client is ready!');
+});
 
-    sock.ev.on('connection.update', ({ connection, qr }) => {
-        if (qr) {
-            console.log('QR:');
-            qrcode.generate(qr, { small: true });
-        }
+client.initialize();
 
-        if (connection === 'open') {
-            console.log('Bot bağlandı ✅');
-        }
+app.get('/', (req, res) => {
+    res.send('WhatsApp Group Auto Message Bot is running!');
+});
 
-        if (connection === 'close') {
-            console.log('Bağlantı kapandı');
-        }
-    });
-}
-
-start();
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
